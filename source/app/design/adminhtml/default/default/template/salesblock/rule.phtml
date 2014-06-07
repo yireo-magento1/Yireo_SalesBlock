@@ -1,0 +1,150 @@
+<?php
+/**
+ * Yireo SalesBlock for Magento 
+ *
+ * @package     Yireo_SalesBlock
+ * @rule      Yireo (http://www.yireo.com/)
+ * @copyright   Copyright (c) 2012 Yireo (http://www.yireo.com/)
+ * @license     Open Software License
+ */
+?>
+<?php
+$rule = $this->getRule();
+?>
+<div class="content-header">
+<table cellspacing="0">
+	<tr>
+		<td style="width:40%;"><h3 class="icon-head head-tag"><?php echo $this->__('Sales Block Rule - Edit'); ?></h3></td>
+        <td class="formbuttons" align="right">
+            <?php echo $this->getChildHtml('back_button'); ?>
+            <?php echo $this->getChildHtml('delete_button'); ?>
+            <?php echo $this->getChildHtml('save_button'); ?>
+            <?php echo $this->getChildHtml('apply_button'); ?>
+        </td>
+	</tr>
+</table>
+</div>
+
+<div id="alert_messages_block"><?php echo $this->getMessageHtml() ?></div>
+
+<form action="<?php echo $this->getSaveUrl() ?>" method="post" id="rule_edit_form" enctype="multipart/form-data">
+
+<div class="entry-edit">
+<div class="entry-edit-head">
+    <h4><?php echo $this->__('Edit'); ?></h4>
+</div>
+<div class="fieldset">
+<table cellspacing="0" class="form-list">
+    <tbody>
+        <tr class="headings">
+            <td class="label">
+                <label for="rule_id"><?php echo Mage::helper('salesblock')->__('ID')?></label>
+            </td>
+            <td class="value">
+                <?php echo $rule->getRuleId(); ?>
+                <input class="input-text" type="hidden" name="rule_id" id="rule_id" value="<?php echo $rule->getRuleId(); ?>" />
+            </td>
+        </tr>
+        <tr class="headings">
+            <td class="label">
+                <label for="label"><?php echo Mage::helper('salesblock')->__('Label')?></label>
+            </td>
+            <td class="value">
+                <input class="input-text" type="text" name="label" id="label" value="<?php echo $rule->getLabel(); ?>" />
+            </td>
+        </tr>
+        <tr class="headings">
+            <td class="label">
+                <label for="status"><?php echo Mage::helper('salesblock')->__('Status')?></label>
+            </td>
+            <td class="value">
+                <select name="status" id="status">
+                <?php 
+                $options = array(
+                    0 => $this->__('No'),
+                    1 => $this->__('Yes'),
+                );
+                ?>
+                <?php foreach($options as $optionValue => $optionLabel) : ?>
+                <?php $selected = ($rule->getStatus() == $optionValue) ? 'selected="selected"' : null; ?>
+                <option <?php echo $selected; ?> value="<?php echo $optionValue; ?>"><?php echo $optionLabel; ?></option>
+                <?php endforeach; ?>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<div class="entry-edit">
+<div class="entry-edit-head">
+    <h4><?php echo $this->__('Rule'); ?></h4>
+</div>
+<div class="fieldset">
+<table cellspacing="0" class="form-list">
+        <tr class="headings">
+            <td class="label">
+                <label for="email_value"><?php echo Mage::helper('salesblock')->__('Email Value')?></label>
+            </td>
+            <td class="value">
+                <textarea name="email_value" id="email_value"><?php echo $rule->getEmailValue(); ?></textarea>
+                <br/>
+                <small>
+                    List of email-matches seperated by newlines.<br/>
+                    Examples: john.doe@example.com, john.doe@, @example.com
+                </small>
+            </td>
+        </tr>
+        <tr class="headings">
+            <td class="label">
+                <label for="ip_value"><?php echo Mage::helper('salesblock')->__('IP Value')?></label>
+            </td>
+            <td class="value">
+                <textarea name="ip_value" id="ip_value"><?php echo $rule->getIpValue(); ?></textarea>
+                <br/>
+                <small>
+                    List of IP-matches seperated by newlines.<br/>
+                    Examples: 127.0.0.1, 127.0.0.0/32, 127.0.0.1-127.0.0.2
+                </small>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<div class="entry-edit">
+<div class="entry-edit-head">
+    <h4><?php echo $this->__('Frontend'); ?></h4>
+</div>
+<div class="fieldset">
+<table cellspacing="0" class="form-list">
+        <tr class="headings">
+            <td class="label">
+                <label for="frontend_label"><?php echo Mage::helper('salesblock')->__('Frontend Label')?></label>
+            </td>
+            <td class="value">
+                <input class="input-text" type="text" name="frontend_label" id="frontend_label" value="<?php echo $rule->getFrontendLabel(); ?>" />
+            </td>
+        </tr>
+        <tr class="headings">
+            <td class="label">
+                <label for="frontend_text"><?php echo Mage::helper('salesblock')->__('Frontend Text')?></label>
+            </td>
+            <td class="value">
+                <textarea name="frontend_text" id="frontend_text"><?php echo $rule->getFrontendText(); ?></textarea>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<?php echo $this->getBlockHtml('formkey')?>
+</form>
+
+<script type="text/javascript">
+//<![CDATA[
+var ruleForm = new varienForm('rule_edit_form');
+</script>

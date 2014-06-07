@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Yireo SalesBlock for Magento
+ *
+ * @package Yireo_SalesBlock
+ * @author Yireo (http://www.yireo.com/)
+ * @copyright Copyright 2014 Yireo (http://www.yireo.com/)
+ * @license Open Source License (OSL v3)
+ * @link http://www.yireo.com
+ */
+-->
+<config>
+    <menu>
+        <system>
+            <children>
+                <salesblock translate="title" module="salesblock">
+                    <title>Sales Block Rules</title>
+                    <action>salesblock/rules/index</action>
+                </salesblock>
+            </children>
+        </system>
+    </menu>
+    <translate>
+        <modules>
+            <Yireo_SalesBlock>
+                <files>
+                    <default>Yireo_SalesBlock.csv</default>
+                </files>
+            </Yireo_SalesBlock>
+        </modules>
+    </translate>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <salesblock translate="title" module="salesblock">
+                                        <title>SalesBlock Section</title>
+                                    </salesblock>
+                                </children>
+                            </config>
+                            <salesblock translate="title" module="salesblock">
+                                <title>Sales Block Rules</title>
+                            </salesblock>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

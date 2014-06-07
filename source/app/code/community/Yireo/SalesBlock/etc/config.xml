@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Yireo SalesBlock for Magento 
+ *
+ * @package     Yireo_SalesBlock
+ * @author      Yireo (http://www.yireo.com/)
+ * @copyright   Copyright (C) 2014 Yireo (http://www.yireo.com/)
+ * @license     Open Source License (OSL v3)
+ */
+-->
+<config>
+
+    <modules>
+        <Yireo_SalesBlock>
+            <version>0.0.5</version>
+        </Yireo_SalesBlock>
+    </modules>
+
+    <global>
+        <blocks>
+            <salesblock>
+                <class>Yireo_SalesBlock_Block</class>
+            </salesblock>
+        </blocks>
+
+        <helpers>
+            <salesblock>
+                <class>Yireo_SalesBlock_Helper</class>
+            </salesblock>
+        </helpers>
+
+        <models>
+            <salesblock>
+                <class>Yireo_SalesBlock_Model</class>
+                <resourceModel>salesblock_mysql4</resourceModel>
+            </salesblock>
+            <salesblock_mysql4>
+                <class>Yireo_SalesBlock_Model_Mysql4</class>
+                <entities>
+                    <rule>
+                        <table>salesblock_rule</table>
+                    </rule>
+                </entities>
+            </salesblock_mysql4>
+        </models>
+
+        <resources>
+            <salesblock_setup>
+                <setup>
+                    <module>Yireo_SalesBlock</module>
+                    <class>Mage_Catalog_Model_Resource_Eav_Mysql4_Setup</class>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </salesblock_setup>
+            <salesblock_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </salesblock_write>
+            <salesblock_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </salesblock_read>
+        </resources>
+
+        <events>
+            <controller_action_predispatch>
+                <observers>
+                    <salesblock_controller_action_predispatch>
+                        <type>singleton</type>
+                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <method>controllerActionPredispatch</method>
+                    </salesblock_controller_action_predispatch>
+                </observers>
+            </controller_action_predispatch>
+        </events>
+    </global>
+
+    <adminhtml>
+        <translate>
+            <modules>
+                <Yireo_SalesBlock>
+                    <files>
+                        <default>Yireo_SalesBlock.csv</default>
+                    </files>
+                </Yireo_SalesBlock>
+            </modules>
+        </translate>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <salesblock translate="title" module="salesblock">
+                                            <title>SalesBlock Section</title>
+                                        </salesblock>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+
+    <admin>
+        <routers>
+            <salesblock>
+                <use>admin</use>
+                <args>
+                    <module>Yireo_SalesBlock</module>
+                    <frontName>salesblock</frontName>
+                </args>
+            </salesblock>
+        </routers>
+    </admin>
+
+    <frontend>
+        <routers>
+            <salesblock>
+                <use>standard</use>
+                <args>
+                    <module>Yireo_SalesBlock</module>
+                    <frontName>salesblock</frontName>
+                </args>
+            </salesblock>
+        </routers>
+        <layout>
+            <updates>
+                <salesblock>
+                    <file>salesblock.xml</file>
+                </salesblock>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Yireo_SalesBlock>
+                    <files>
+                        <default>Yireo_SalesBlock.csv</default>
+                    </files>
+                </Yireo_SalesBlock>
+            </modules>
+        </translate>
+    </frontend>
+
+    <default>
+        <salesblock>
+            <settings>
+                <enabled>1</enabled>
+                <custom_page>1</custom_page>
+                <message>Due to dispute in the past, you are not allowed to make a purchase on this site</message>
+            </settings>
+        </salesblock>
+    </default>
+</config>
