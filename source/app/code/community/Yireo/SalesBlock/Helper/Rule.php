@@ -48,6 +48,14 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
             $customerEmail = $quote->getCustomerEmail();
         }
 
+        // Check for AW Onestepcheckout form values
+        if (empty($customerEmail)) {
+            $data = Mage::getSingleton('checkout/session')->getData('aw_onestepcheckout_form_values');
+                if (is_array($data) && !empty($data['billing']['email'])) {
+                   $customerEmail = $data['billing']['email'];
+            }       
+        }
+
         // Loop through all rules
         foreach($rules as $rule) {
             $ruleIpValues = $rule->getIpValueArray();
