@@ -16,7 +16,7 @@
             <children>
                 <salesblock translate="title" module="salesblock">
                     <title>Sales Block Rules</title>
-                    <action>salesblock/rules/index</action>
+                    <action>adminhtml/salesblockrules/index</action>
                 </salesblock>
             </children>
         </system>

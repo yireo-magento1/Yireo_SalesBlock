@@ -9,8 +9,14 @@
  * @link        http://www.yireo.com/
  */
 
+/**
+ * Class Yireo_SalesBlock_Block_Rules_Grid
+ */
 class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
+    /**
+     * Add grid things to the constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -21,6 +27,11 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
 
     }
 
+    /**
+     * Prepare the salesblock collection loaded from the database
+     *
+     * @return $this
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::getModel('salesblock/rule')->getCollection();
@@ -37,6 +48,12 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
         return $this;
     }
 
+    /**
+     * Prepare the columns in this grid
+     *
+     * @return $this
+     * @throws Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('rule_id', array(
@@ -79,22 +96,22 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
             'actions' => array(
                 array(
                     'caption' => Mage::helper('salesblock')->__('Edit'),
-                    'url' => array('base' => '*/rule/edit'),
+                    'url' => array('base' => 'adminhtml/salesblockrule/edit'),
                     'field' => 'rule_id'
                 ),
                 array(
                     'caption' => Mage::helper('salesblock')->__('Delete'),
-                    'url' => array('base' => '*/*/delete'),
+                    'url' => array('base' => 'adminhtml/salesblockrules/delete'),
                     'field' => 'rule_id'
                 ),
                 array(
                     'caption' => Mage::helper('salesblock')->__('Disable'),
-                    'url' => array('base' => '*/*/disable'),
+                    'url' => array('base' => 'adminhtml/salesblockrules/disable'),
                     'field' => 'rule_id'
                 ),
                 array(
                     'caption' => Mage::helper('salesblock')->__('Enable'),
-                    'url' => array('base' => '*/*/enable'),
+                    'url' => array('base' => 'adminhtml/salesblockrules/enable'),
                     'field' => 'rule_id'
                 )
             ),
@@ -105,6 +122,9 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
         return parent::_prepareColumns();
     }
 
+    /**
+     * Prepare mass actions
+     */
     protected function _prepareMassaction()
     {
         $this->setMassactionIdField('rule_id');
@@ -113,23 +133,30 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
 
         $this->getMassactionBlock()->addItem('delete', array(
             'label'=> Mage::helper('salesblock')->__('Delete'),
-            'url'  => $this->getUrl('*/*/delete'),
+            'url'  => $this->getUrl('adminhtml/salesblockrules/delete'),
         ));
 
         $this->getMassactionBlock()->addItem('disable', array(
             'label'=> Mage::helper('salesblock')->__('Disable'),
-            'url'  => $this->getUrl('*/*/disable'),
+            'url'  => $this->getUrl('adminhtml/salesblockrules/disable'),
         ));
 
         $this->getMassactionBlock()->addItem('enable', array(
             'label'=> Mage::helper('salesblock')->__('Enable'),
-            'url'  => $this->getUrl('*/*/enable'),
+            'url'  => $this->getUrl('adminhtml/salesblockrules/enable'),
         ));
     }
 
+    /**
+     * Get the edit URL for a specific sales block rule
+     *
+     * @param $row
+     *
+     * @return string
+     */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/rule/edit', array('rule_id' => $row->getRuleId()));
+        return $this->getUrl('adminhtml/salesblockrule/edit', array('rule_id' => $row->getRuleId()));
     }
 
 }

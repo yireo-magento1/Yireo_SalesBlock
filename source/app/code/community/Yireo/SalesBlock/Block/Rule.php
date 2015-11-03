@@ -11,7 +11,7 @@
 
 class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
 {
-    /*
+    /**
      * Constructor method
      */
     public function _construct()
@@ -20,66 +20,80 @@ class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
         parent::_construct();
     }
 
+    /**
+     * Prepare the layout by adding buttons
+     *
+     * @return Mage_Core_Block_Abstract
+     */
     protected function _prepareLayout()
     {
-        $this->setChild('save_button',
-            $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
-                    'label' => Mage::helper('salesblock')->__('Save'),
-                    'onclick' => 'ruleForm.submit();',
-                    'class' => 'save'
-                ))
-        );
+        $saveButtonBlock = $this->getButtonBlock('Save', 'ruleForm.submit();', 'save');
+        $this->setChild('save_button', $saveButtonBlock);
 
-        $this->setChild('apply_button',
-            $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
-                    'label' => Mage::helper('salesblock')->__('Apply'),
-                    'onclick' => 'ruleForm.submit();',
-                    'class' => 'save'
-                ))
-        );
+        $applyButtonBlock = $this->getButtonBlock('Apply', 'ruleForm.submit();', 'save');
+        $this->setChild('apply_button', $applyButtonBlock);
 
-        if($this->getRule()->getRuleId() > 0) {
-            $this->setChild('delete_button',
-                $this->getLayout()->createBlock('adminhtml/widget_button')
-                    ->setData(array(
-                        'label' => Mage::helper('salesblock')->__('Delete'),
-                        'onclick' => 'setLocation(\''.$this->getBackUrl().'\')',
-                        'class' => 'delete'
-                    ))
-            );
-        }
+        $deleteButtonBlock = $this->getButtonBlock('Delete', 'setLocation(\''.$this->getDeleteUrl().'\')', 'delete');
+        $this->setChild('delete_button', $deleteButtonBlock);
 
-        $this->setChild('back_button',
-            $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
-                    'label' => Mage::helper('salesblock')->__('Back'),
-                    'onclick' => 'setLocation(\''.$this->getBackUrl().'\')',
-                    'class' => 'back'
-                ))
-        );
-
+        $backButtonBlock = $this->getButtonBlock('Back', 'setLocation(\''.$this->getBackUrl().'\')', 'back');
+        $this->setChild('back_button', $backButtonBlock);
 
         return parent::_prepareLayout();
     }
 
+    /**
+     * Return a button block with some parameters set
+     *
+     * @param $label
+     * @param $onClick
+     * @param $class
+     *
+     * @return Mage_Core_Block_Abstract
+     */
+    protected function getButtonBlock($label, $onClick, $class)
+    {
+        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label' => Mage::helper('salesblock')->__($label),
+                'onclick' => $onClick,
+                'class' => $class
+            ));
+
+        return $buttonBlock;
+    }
+
+    /**
+     * Return the URL to save a rule
+     *
+     * @return string
+     */
     public function getSaveUrl()
     {
-        return $this->getUrl('*/rule/save');
+        return $this->getUrl('adminhtml/salesblockrule/save');
     }
 
+    /**
+     * Return the URL to go back to the overview
+     *
+     * @return string
+     */
     public function getBackUrl()
     {
-        return $this->getUrl('*/rules/index');
+        return $this->getUrl('adminhtml/salesblockrules/index');
     }
 
+    /**
+     * Return the URL to delete a rule
+     *
+     * @return string
+     */
     public function getDeleteUrl()
     {
-        return $this->getUrl('*/rule/delete', array('rule_id' => $this->getRule()->getRuleId()));
+        return $this->getUrl('adminhtml/salesblockrule/delete', array('rule_id' => $this->getRule()->getRuleId()));
     }
 
-    /*
+    /**
      * Helper to return the header of this page
      */
     public function getHeader()
@@ -87,6 +101,12 @@ class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
         return $this->__('Sales Block Rules');
     }
 
+    /**
+     * Load a specific rule by URL parameter
+     *
+     * @return false|Mage_Core_Model_Abstract
+     * @throws Exception
+     */
     public function getRule()
     {
         $rule_id = $this->getRequest()->getParam('rule_id');
@@ -101,8 +121,6 @@ class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
     /**
      * Return the version
      *
-     * @access public
-     * @param null
      * @return string
      */
     public function getVersion()

@@ -11,7 +11,7 @@
 
 class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
 {
-    /*
+    /**
      * Constructor method
      */
     public function _construct()
@@ -20,6 +20,11 @@ class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
         parent::_construct();
     }
 
+    /**
+     * Prepare the layout
+     *
+     * @return Mage_Core_Block_Abstract
+     */
     protected function _prepareLayout()
     {
         $this->setChild('grid', $this->getLayout()
@@ -27,35 +32,65 @@ class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
             ->setSaveParametersInSession(true)
         );
 
-        $this->setChild('new_button',
-            $this->getLayout()->createBlock('adminhtml/widget_button')
-                ->setData(array(
-                    'label'     => Mage::helper('adminhtml')->__('New'),
-                    'onclick'   => 'setLocation(\''.$this->getNewUrl().'\')',
-                    'class'   => 'task'
-                ))
-        );
+        $newButtonBlock = $this->getButtonBlock('New', 'setLocation(\''.$this->getNewUrl().'\')', 'task');
+        $this->setChild('new_button', $newButtonBlock);
 
         return parent::_prepareLayout();
     }
 
 
+    /**
+     * Return a button block with some parameters set
+     *
+     * @param $label
+     * @param $onClick
+     * @param $class
+     *
+     * @return Mage_Core_Block_Abstract
+     */
+    protected function getButtonBlock($label, $onClick, $class)
+    {
+        $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')
+            ->setData(array(
+                'label' => Mage::helper('salesblock')->__($label),
+                'onclick' => $onClick,
+                'class' => $class
+            ));
+
+        return $buttonBlock;
+    }
+
+    /**
+     * Return the grid HTML block
+     *
+     * @return string
+     */
     public function getGridHtml()
     {
         return $this->getChildHtml('grid');
     }
 
+    /**
+     * Return the URL to create a new rule
+     *
+     * @return string
+     */
     public function getNewUrl()
     {
-        return $this->getUrl('*/rule/edit');
+        return $this->getUrl('adminhtml/salesblockrule/edit');
     }
 
+    /**
+     * Return the new button HTML
+     *
+     * @return string
+     */
     public function getNewButtonHtml()
     {
         return $this->getChildHtml('new_button');
     }
 
-    /*
+    /**
      * Helper to return the header of this page
      */
     public function getHeader()
@@ -66,8 +101,6 @@ class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
     /**
      * Return the version
      *
-     * @access public
-     * @param null
      * @return string
      */
     public function getVersion()

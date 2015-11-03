@@ -11,7 +11,7 @@
 
 class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
 {
-    /*
+    /**
      * Constructor method
      */
     public function _construct()
@@ -20,6 +20,11 @@ class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
         parent::_construct();
     }
 
+    /**
+     * Get the title of a content page
+     *
+     * @return string
+     */
     public function getContentTitle()
     {
         $title = $this->getCmsPage()->getContentHeading();
@@ -28,6 +33,11 @@ class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
         return $title;
     }
 
+    /**
+     * Get the body / text of a content page
+     *
+     * @return mixed
+     */
     public function getContentText()
     {
         $text = $this->getCmsPage()->getContent();
@@ -36,6 +46,11 @@ class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
         return $text;
     }
 
+    /**
+     * Load a specific CMS page
+     *
+     * @return Mage_Core_Model_Abstract|mixed
+     */
     public function getCmsPage()
     {
         if(empty($this->cmsPage)) {
@@ -45,6 +60,11 @@ class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
         return $this->cmsPage;
     }
 
+    /**
+     * Load a specific rule
+     *
+     * @return Mage_Core_Model_Abstract
+     */
     public function getRule()
     {
         $storedRule = (int)Mage::getSingleton('core/session')->getSalesblockRule();

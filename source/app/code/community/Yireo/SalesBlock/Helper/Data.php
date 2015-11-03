@@ -13,23 +13,23 @@
  */
 class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    /*
+    /**
      * Helper-method to check if this module is enabled
      *
-     * @access public
-     * @param null
      * @return bool
      */
     public function enabled()
     {
+        if ((bool)Mage::getStoreConfig('advanced/modules_disable_output/Yireo_SalesBlock')) {
+            return false;
+        }
+
         return (bool)Mage::getStoreConfig('salesblock/settings/enabled');
     }
 
-    /*
+    /**
      * Helper-method to fetch all rules
      *
-     * @access public
-     * @param null
      * @return bool
      */
     public function getRules()
@@ -38,6 +38,11 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
         return $rules;
     }
 
+    /**
+     * Determine the right URL for the custom deny page
+     *
+     * @return string
+     */
     public function getUrl()
     {
         $custom_page = (int)Mage::getStoreConfig('salesblock/settings/custom_page');
@@ -48,5 +53,25 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
             $cmsPageUrl = Mage::helper('cms/page')->getPageUrl($cmsPageId);
             return $cmsPageUrl;
         }
+    }
+
+    /**
+     * Determine whether the current request is AJAX
+     *
+     * @return bool
+     */
+    public function isAjax()
+    {
+        $request = Mage::app()->getRequest();
+
+        if ($request->isXmlHttpRequest()) {
+            return true;
+        }
+
+        if ($request->getParam('ajax') || $request->getParam('isAjax')) {
+            return true;
+        }
+
+        return false;
     }
 }

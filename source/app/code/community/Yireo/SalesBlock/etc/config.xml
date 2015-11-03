@@ -13,7 +13,7 @@
 
     <modules>
         <Yireo_SalesBlock>
-            <version>0.0.6</version>
+            <version>0.0.8</version>
         </Yireo_SalesBlock>
     </modules>
 
@@ -77,6 +77,24 @@
                     </salesblock_controller_action_predispatch>
                 </observers>
             </controller_action_predispatch>
+           <sales_quote_save_before>
+                <observers>
+                    <salesblock_sales_quote_save_before>
+                        <type>singleton</type>
+                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <method>salesQuoteSaveBefore</method>
+                    </salesblock_sales_quote_save_before>
+                </observers>
+            </sales_quote_save_before>
+           <sales_order_place_before>
+                <observers>
+                    <salesblock_sales_order_place_before>
+                        <type>singleton</type>
+                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <method>salesOrderPlaceBefore</method>
+                    </salesblock_sales_order_place_before>
+                </observers>
+            </sales_order_place_before>
         </events>
     </global>
 
@@ -113,13 +131,13 @@
 
     <admin>
         <routers>
-            <salesblock>
-                <use>admin</use>
+            <adminhtml>
                 <args>
-                    <module>Yireo_SalesBlock</module>
-                    <frontName>salesblock</frontName>
+                    <modules>
+                        <salesblock after="Mage_Adminhtml">Yireo_SalesBlock</salesblock>
+                    </modules>
                 </args>
-            </salesblock>
+            </adminhtml>
         </routers>
     </admin>
 

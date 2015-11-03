@@ -13,11 +13,9 @@
  */
 class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
 {
-    /*
+    /**
      * Method to check whether the current visitor matches a SalesBlock rule
      *
-     * @access public
-     * @param null
      * @return bool
      */
     public function hasMatch()
@@ -34,27 +32,10 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
         }
 
         // Fetch the IP
-        $ip = $_SERVER['REMOTE_ADDR'];
-        if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        }
+        $ip = $this->getIp();
 
         // Load the customer-record
-        $customer = Mage::getModel('customer/session')->getCustomer();
-        if($customer->getId() > 0) {
-            $customerEmail = $customer->getEmail();
-        } else {
-            $quote = Mage::getModel('checkout/cart')->getQuote();
-            $customerEmail = $quote->getCustomerEmail();
-        }
-
-        // Check for AW Onestepcheckout form values
-        if (empty($customerEmail)) {
-            $data = Mage::getSingleton('checkout/session')->getData('aw_onestepcheckout_form_values');
-                if (is_array($data) && !empty($data['billing']['email'])) {
-                   $customerEmail = $data['billing']['email'];
-            }       
-        }
+        $customerEmail = $this->getCustomerEmail();
 
         // Loop through all rules
         foreach($rules as $rule) {
@@ -104,13 +85,54 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
         return false;
     }
 
-    /*
+    /**
+     * Return the email of the current customer
+     *
+     * @return mixed
+     */
+    protected function getCustomerEmail()
+    {
+        // Load the customer-record
+        $customer = Mage::getModel('customer/session')->getCustomer();
+        if($customer->getId() > 0) {
+            $customerEmail = $customer->getEmail();
+        } else {
+            $quote = Mage::getModel('checkout/cart')->getQuote();
+            $customerEmail = $quote->getCustomerEmail();
+        }
+
+        // Check for AW Onestepcheckout form values
+        if (empty($customerEmail)) {
+            $data = Mage::getSingleton('checkout/session')->getData('aw_onestepcheckout_form_values');
+            if (is_array($data) && !empty($data['billing']['email'])) {
+                $customerEmail = $data['billing']['email'];
+            }
+        }
+
+        return $customerEmail;
+    }
+
+    /**
+     * Get the current IP address
+     *
+     * @return string
+     */
+    protected function getIp()
+    {
+        $ip = $_SERVER['REMOTE_ADDR'];
+        if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+
+        return $ip;
+    }
+
+    /**
      * Method to execute when a visitor is actually matched
      *
-     * @access public
      * @param string $ip
      * @param string $email
-     * @return null
+     *
      */
     public function isMatch($ip, $email)
     {
