@@ -126,6 +126,11 @@ $rule = $this->getRule();
             </td>
             <td class="value">
                 <input class="input-text" type="text" name="frontend_label" id="frontend_label" value="<?php echo $rule->getFrontendLabel(); ?>" />
+                <br/>
+                <small>
+                    This value is only outputted in the frontend if you redirect to the custom page with URL <code>/salesblock</code>.<br/>
+                    You can then customize the PHTML template <code>salesblock/content.phtml</code>
+                </small>
             </td>
         </tr>
         <tr class="headings">
@@ -134,6 +139,11 @@ $rule = $this->getRule();
             </td>
             <td class="value">
                 <textarea name="frontend_text" id="frontend_text"><?php echo $rule->getFrontendText(); ?></textarea>
+                <br/>
+                <small>
+                    This value is only outputted in the frontend if you redirect to the custom page with URL <code>/salesblock</code>.<br/>
+                    You can then customize the PHTML template <code>salesblock/content.phtml</code>
+                </small>
             </td>
         </tr>
     </tbody>

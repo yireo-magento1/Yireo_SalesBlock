@@ -45,12 +45,13 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getUrl()
     {
-        $custom_page = (int)Mage::getStoreConfig('salesblock/settings/custom_page');
-        if($custom_page == 1) {
+        $custom_page = (int) Mage::getStoreConfig('salesblock/settings/custom_page');
+        $cmsPageId = Mage::getStoreConfig('salesblock/settings/cmspage');
+        $cmsPageUrl = Mage::helper('cms/page')->getPageUrl($cmsPageId);
+
+        if($custom_page == 1 || empty($cmsPageUrl)) {
             return Mage::getUrl('salesblock');
         } else {
-            $cmsPageId = Mage::getStoreConfig('salesblock/settings/cmspage');
-            $cmsPageUrl = Mage::helper('cms/page')->getPageUrl($cmsPageId);
             return $cmsPageUrl;
         }
     }

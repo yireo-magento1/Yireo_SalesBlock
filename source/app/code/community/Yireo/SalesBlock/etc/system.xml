@@ -30,6 +30,7 @@
                     <fields>
                         <enabled translate="label">
                             <label>Enabled</label>
+                            <comment><![CDATA[Set to "No" to disable all checking for rules]]></comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>1</sort_order>
@@ -37,24 +38,26 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enabled>
-                        <custom_page translate="label">
-                            <label>Use Custom Page</label>
+                        <cmspage translate="label">
+                            <label>Redirect to CMS Page</label>
+                            <comment><![CDATA[Redirect denied transactions to this CMS Page]]></comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_cms_page</source_model>
+                            <source_model>salesblock/backend_source_custompage</source_model>
                             <sort_order>2</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </custom_page>
-                        <cmspage translate="label">
-                            <label>Denied Page</label>
+                        </cmspage>
+                        <custom_page translate="label">
+                            <label>Redirect to custom page</label>
+                            <comment><![CDATA[Redirect to custom page: URL salesblock/index/index; PHTML-template <code>salesblock/content.phtml</code>]]></comment>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_cms_page</source_model>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </cmspage>
+                        </custom_page>
                     </fields>
                 </settings>
             </groups>

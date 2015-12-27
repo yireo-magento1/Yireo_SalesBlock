@@ -51,8 +51,7 @@ class Yireo_SalesBlock_Model_Observer extends Mage_Core_Model_Abstract
             return $this;
         }
 
-        // Store the match in the session
-        Mage::getSingleton('core/session')->setSalesblockRule($match);
+        $this->storeData($match);
 
         if ($this->getHelper()->isAjax() && in_array($action, array('saveFormValues', 'placeOrder'))) {
             $request = Mage::app()->getRequest();
@@ -97,7 +96,7 @@ class Yireo_SalesBlock_Model_Observer extends Mage_Core_Model_Abstract
      * @param $observer
      *
      * @return $this
-     * @throws Exception
+     * @throws Yireo_SalesBlock_Lib_Exception_SalesDeniedException
      */
     public function salesQuoteSaveBefore($observer)
     {
@@ -106,13 +105,15 @@ class Yireo_SalesBlock_Model_Observer extends Mage_Core_Model_Abstract
             return $this;
         }
 
+        $this->storeData($match);
+
         $url = $this->getHelper()->getUrl();
         if (!empty($url)) {
             Mage::app()->getResponse()->setRedirect($url);
             return $this;
         }
 
-        throw new Exception('Unable to save quote.');
+        throw new Yireo_SalesBlock_Lib_Exception_SalesDeniedException('Unable to save quote.');
     }
 
     /**
@@ -121,7 +122,7 @@ class Yireo_SalesBlock_Model_Observer extends Mage_Core_Model_Abstract
      * @param $observer
      *
      * @return $this
-     * @throws Exception
+     * @throws Yireo_SalesBlock_Lib_Exception_SalesDeniedException
      */
     public function salesOrderPlaceBefore($observer)
     {
@@ -130,13 +131,83 @@ class Yireo_SalesBlock_Model_Observer extends Mage_Core_Model_Abstract
             return $this;
         }
 
+        $this->storeData($match);
+
         $url = $this->getHelper()->getUrl();
         if (!empty($url)) {
             Mage::app()->getResponse()->setRedirect($url);
             return $this;
         }
 
-        throw new Exception('Unable to save order.');
+        throw new Yireo_SalesBlock_Lib_Exception_SalesDeniedException('Unable to save order.');
+    }
+
+    /**
+     * Listen to the event core_block_abstract_to_html_after
+     *
+     * @parameter Varien_Event_Observer $observer
+     * @return $this
+     */
+    public function coreBlockAbstractToHtmlAfter($observer)
+    {
+        if($this->getHelper()->enabled() == false) {
+            return $this;
+        }
+
+        $transport = $observer->getEvent()->getTransport();
+        $block = $observer->getEvent()->getBlock();
+        $variables = $this->getRuleVariablesFromSession();
+
+        if (!is_array($variables)) {
+            return $this;
+        }
+
+        if($this->isAllowedBlock($block) == false) {
+            return $this;
+        }
+            
+        $html = $transport->getHtml();
+
+        foreach ($variables as $variableName => $variableValue) {
+            $html = str_replace('{{var '.$variableName.'}}', $variableValue, $html);
+        }
+
+        $transport->setHtml($html);
+
+        return $this;
+    }
+
+    /**
+     *
+     */
+    protected function storeData($match)
+    {
+        // Store the match in the session
+        Mage::getSingleton('core/session')->setSalesblockRule($match);
+    }
+
+    /**
+     *
+     */
+    protected function getRuleVariablesFromSession()
+    {
+        // Store the match in the session
+        $ruleId = Mage::getSingleton('core/session')->getSalesblockRule();
+        if (empty($ruleId)) {
+            return false;
+        }
+        
+        $rule = Mage::getModel('salesblock/rule')->load($ruleId);
+        if (!$rule->getId() > 0) {
+            return false;
+        }
+
+        $variables = array(
+            'salesblock_rule_frontend_label' => $rule->getFrontendLabel(),
+            'salesblock_rule_frontend_text' => $rule->getFrontendText(),
+        );
+
+        return $variables;
     }
 
     /**
@@ -154,5 +225,16 @@ class Yireo_SalesBlock_Model_Observer extends Mage_Core_Model_Abstract
     protected function getHelper()
     {
         return Mage::helper('salesblock');
+    }
+
+    protected function isAllowedBlock($block)
+    {
+        $allowedBlocks = array('content');
+
+        if(in_array($block->getNameInLayout(), $allowedBlocks)) {
+            return true;
+        }
+
+        return false;
     }
 }

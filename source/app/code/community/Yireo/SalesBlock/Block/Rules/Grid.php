@@ -83,10 +83,16 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
             'type' => 'text',
         ));
 
+        $sourceOptions = array(
+            0 => 'Disabled',
+            1 => 'Enabled',
+        );
+
         $this->addColumn('status', array(
             'header'=> Mage::helper('salesblock')->__('Status'),
             'index' => 'status',
-            'type' => 'text',
+            'options' => $sourceOptions,
+            'type' => 'options',
         ));
 
         $this->addColumn('actions', array(

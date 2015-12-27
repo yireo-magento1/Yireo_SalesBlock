@@ -29,7 +29,19 @@ class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
     {
         $title = $this->getCmsPage()->getContentHeading();
         $ruleTitle = $this->getRule()->getFrontendLabel();
-        if(!empty($ruleTitle)) $title = $title.' - '.$ruleTitle;
+
+        if(!empty($ruleTitle)) {
+            if (!empty($title)) {
+                $title = $title.' - '.$ruleTitle;
+            } else {
+                $title = $ruleTitle;
+            }
+        }
+
+        if (empty($title)) {
+            $title = 'Transaction denied';
+        }
+
         return $title;
     }
 
@@ -42,7 +54,10 @@ class Yireo_SalesBlock_Block_Content extends Mage_Core_Block_Template
     {
         $text = $this->getCmsPage()->getContent();
         $ruleText = $this->getRule()->getFrontendText();
-        if(!empty($ruleText)) $text = $ruleText;
+        if(!empty($ruleText)) {
+            $text = $ruleText;
+        }
+
         return $text;
     }
 
