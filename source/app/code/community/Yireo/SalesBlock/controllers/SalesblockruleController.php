@@ -1,10 +1,10 @@
 <?php
 /**
- * Yireo SalesBlock for Magento 
+ * Yireo SalesBlock for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
  */
 
@@ -17,22 +17,48 @@
 class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controller_Action
 {
     /**
+     * @var Mage_Adminhtml_Model_Session
+     */
+    protected $adminHtmlSession;
+
+    /**
+     * @var Mage_Admin_Model_Session
+     */
+    protected $adminSession;
+
+    /**
+     * @var Yireo_SalesBlock_Model_Rule
+     */
+    protected $ruleModel;
+
+    /**
+     * Constructor
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+
+        $this->adminHtmlSession = Mage::getModel('adminhtml/session');
+        $this->adminSession = Mage::getModel('admin/session');
+        $this->ruleModel = Mage::getModel('salesblock/rule');
+    }
+    
+    /**
      * Common method
      *
-     * @return Yireo_SalesBlock_RuleController
+     * @return Yireo_SalesBlock_SalesblockruleController
      */
     protected function _initAction()
     {
         $this->loadLayout()
             ->_setActiveMenu('system/salesblock')
-            ->_addBreadcrumb(Mage::helper('adminhtml')->__('System'), Mage::helper('adminhtml')->__('System'))
-            ->_addBreadcrumb(Mage::helper('adminhtml')->__('Sales Block Rules'), Mage::helper('adminhtml')->__('Sales Block Rules'))
-        ;
+            ->_addBreadcrumb($this->__('System'), $this->__('System'))
+            ->_addBreadcrumb($this->__('Sales Block Rules'), $this->__('Sales Block Rules'));
         return $this;
     }
 
     /**
-     * Edit action 
+     * Edit action
      */
     public function editAction()
     {
@@ -50,8 +76,8 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         $rule_id = $this->getRequest()->getParam('rule_id');
 
         // Initialize the rule
-        $rule = Mage::getModel('salesblock/rule');
-        if(!empty($rule_id)) {
+        $rule = $this->ruleModel;
+        if (!empty($rule_id)) {
             $rule->load($rule_id);
         }
 
@@ -65,7 +91,7 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         $rule->save();
 
         // Set a message
-        Mage::getModel('adminhtml/session')->addNotice($this->__('Saved rule succesfully'));
+        $this->adminHtmlSession->addNotice($this->__('Saved rule succesfully'));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -80,13 +106,13 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         $rule_id = $this->getRequest()->getParam('rule_id');
 
         // Delete the rule
-        if(!empty($rule_id)) {
-            $rule = Mage::getModel('salesblock/rule')->load($rule_id);
+        if (!empty($rule_id)) {
+            $rule = $this->ruleModel->load($rule_id);
             $rule->delete();
         }
 
         // Set a message
-        Mage::getModel('adminhtml/session')->addNotice($this->__('Deleted rule succesfully'));
+        $this->adminHtmlSession->addNotice($this->__('Deleted rule succesfully'));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -101,6 +127,6 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
     {
         $aclResource = 'admin/system/salesblock';
 
-        return Mage::getSingleton('admin/session')->isAllowed($aclResource);
+        return $this->adminSession->isAllowed($aclResource);
     }
 }

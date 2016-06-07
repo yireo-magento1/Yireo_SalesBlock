@@ -1,10 +1,10 @@
 <?php
 /**
- * Yireo SalesBlock for Magento 
+ * Yireo SalesBlock for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
  */
 
@@ -14,19 +14,61 @@
 class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
 {
     /**
+     * @var Yireo_SalesBlock_Helper_Data
+     */
+    protected $helper;
+
+    /**
+     * @var Mage_Checkout_Model_Session
+     */
+    protected $checkoutSession;
+
+    /**
+     * @var Mage_Customer_Model_Session
+     */
+    protected $customerSession;
+
+    /**
+     * @var Mage_Checkout_Model_Cart
+     */
+    protected $cart;
+
+    /**
+     * Yireo_SalesBlock_Helper_Rule constructor.
+     */
+    public function __construct()
+    {
+        $this->helper = Mage::helper('salesblock');
+        $this->checkoutSession = Mage::getSingleton('checkout/session');
+        $this->customerSession = Mage::getSingleton('customer/session');
+        $this->cart = Mage::getModel('checkout/cart');
+    }
+
+    /**
      * Method to check whether the current visitor matches a SalesBlock rule
      *
-     * @return bool
+     * @return false|int
+     * @deprecated Use Yireo_SalesBlock_Helper_Rule::getMatchId() instead
      */
     public function hasMatch()
     {
+        return $this->getMatchId();
+    }
+    
+    /**
+     * Method to check whether the current visitor matches a SalesBlock rule
+     *
+     * @return false|int
+     */
+    public function getMatchId()
+    {
         // Check whether the module is disabled
-        if(Mage::helper('salesblock')->enabled() == false) {
+        if ($this->helper->enabled() == false) {
             return false;
         }
 
         // Load all rules and exit if there are no rules
-        $rules = Mage::helper('salesblock')->getRules();
+        $rules = $this->helper->getRules();
         if ($rules->getSize() > 0 == false) {
             return false;
         }
@@ -38,48 +80,91 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
         $customerEmail = $this->getCustomerEmail();
 
         // Loop through all rules
-        foreach($rules as $rule) {
+        foreach ($rules as $rule) {
+
+            /** @var Yireo_SalesBlock_Model_Rule $rule */
+
             $ruleIpValues = $rule->getIpValueArray();
 
-            // Direct matches
-            if(in_array($ip, $ruleIpValues)) {
-                Mage::helper('salesblock/rule')->isMatch($ip, $customerEmail);
+            // Direct IP matches
+            if (in_array($ip, $ruleIpValues)) {
+                $this->logMatch($ip, $customerEmail);
                 return $rule->getId();
+            }
 
             // Other matches
-            } elseif(!empty($ruleIpValues)) {
-                foreach($ruleIpValues as $ruleIpValue) {
-
-                    // Convert subnet ranges
-                    if(preg_match('/([0-9\.]+)\/([0-9]+)/', $range, $rangeMatch)) {
-                        $rip = ip2long($rangeMatch[1]);
-                        $ipStart = long2ip((float)$rip);
-                        $ipEnd = long2ip((float)($rip | (1<<(32-$rangeMatch[2]))-1));
-                        $ruleIpValue = $ipStart.'-'.$ipEnd;
-                    }
-
-                    // IP-ranges
-                    if(preg_match('/([0-9\.]+)-([0-9\.]+)/', $ruleIpValue, $ipMatch)) {
-                        if(version_compare($ip, $ipMatch[1], '>=') && version_compare($ip, $ipMatch[2], '<=')) {
-                            Mage::helper('salesblock/rule')->isMatch($ip, $customerEmail);
-                            return $rule->getId();
-                        }
+            if (!empty($ruleIpValues)) {
+                foreach ($ruleIpValues as $ruleIpValue) {
+                    if ($this->matchIpRange($ip, $ruleIpValue)) {
+                        $this->logMatch($ip, $customerEmail);
+                        return $rule->getId();
                     }
                 }
             }
 
-            if(!empty($customerEmail)) {
+            // Email matches
+            if (!empty($customerEmail)) {
                 $ruleEmailValues = $rule->getEmailValueArray();
-                foreach($ruleEmailValues as $ruleEmailValue) {
-                    if($ruleEmailValue == $customerEmail) {
-                        Mage::helper('salesblock/rule')->isMatch($ip, $customerEmail);
-                        return $rule->getId();
-                    } elseif(stristr($customerEmail, $ruleEmailValue)) {
-                        Mage::helper('salesblock/rule')->isMatch($ip, $customerEmail);
+                foreach ($ruleEmailValues as $ruleEmailValue) {
+                    if ($this->hasEmailMatch($customerEmail, $ruleEmailValue)) {
+                        $this->logMatch($ip, $customerEmail);
                         return $rule->getId();
                     }
                 }
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * Match whether a certain IP matches a certain range string
+     *
+     * @param $ip
+     * @param $rangeString
+     *
+     * @return bool
+     */
+    public function matchIpRange($ip, $rangeString)
+    {
+        // Convert subnet ranges
+        if (!preg_match('/([0-9\.]+)\/([0-9]+)/', $rangeString, $rangeMatch)) {
+            return false;
+        }
+
+        $rip = ip2long($rangeMatch[1]);
+        $ipStart = long2ip((float)$rip);
+        $ipEnd = long2ip((float)($rip | (1 << (32 - $rangeMatch[2])) - 1));
+        $rangeString = $ipStart . '-' . $ipEnd;
+
+        // Check for IP-ranges
+        if (!preg_match('/([0-9\.]+)-([0-9\.]+)/', $rangeString, $ipMatch)) {
+            return false;
+        }
+
+        if (version_compare($ip, $ipMatch[1], '>=') && version_compare($ip, $ipMatch[2], '<=')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether an email matches a pattern
+     *
+     * @param $email
+     * @param $emailPattern
+     *
+     * @return bool
+     */
+    public function hasEmailMatch($email, $emailPattern)
+    {
+        if ($email == $emailPattern) {
+            return true;
+        }
+
+        if (stristr($email, $emailPattern)) {
+            return true;
         }
 
         return false;
@@ -93,20 +178,25 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
     protected function getCustomerEmail()
     {
         // Load the customer-record
-        $customer = Mage::getModel('customer/session')->getCustomer();
-        if($customer->getId() > 0) {
+        $customer = $this->customerSession->getCustomer();
+        if ($customer->getId() > 0) {
             $customerEmail = $customer->getEmail();
-        } else {
-            $quote = Mage::getModel('checkout/cart')->getQuote();
-            $customerEmail = $quote->getCustomerEmail();
+            if (!empty($customerEmail)) {
+                return $customerEmail;
+            }
+        }
+
+        // Check the quote
+        $quote = $this->cart->getQuote();
+        $customerEmail = $quote->getCustomerEmail();
+        if (!empty($customerEmail)) {
+            return $customerEmail;
         }
 
         // Check for AW Onestepcheckout form values
-        if (empty($customerEmail)) {
-            $data = Mage::getSingleton('checkout/session')->getData('aw_onestepcheckout_form_values');
-            if (is_array($data) && !empty($data['billing']['email'])) {
-                $customerEmail = $data['billing']['email'];
-            }
+        $data = $this->checkoutSession->getData('aw_onestepcheckout_form_values');
+        if (is_array($data) && !empty($data['billing']['email'])) {
+            $customerEmail = $data['billing']['email'];
         }
 
         return $customerEmail;
@@ -117,10 +207,11 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
      *
      * @return string
      */
-    protected function getIp()
+    public function getIp()
     {
         $ip = $_SERVER['REMOTE_ADDR'];
-        if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         }
 
@@ -134,9 +225,9 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
      * @param string $email
      *
      */
-    public function isMatch($ip, $email)
+    public function logMatch($ip, $email)
     {
-        $message = 'SalesBlock: IP '.$ip.', email '.$email;
-        Mage::log($message ,null, 'salesblock.log');
+        $message = 'SalesBlock: IP ' . $ip . ', email ' . $email;
+        Mage::log($message, null, 'salesblock.log');
     }
 }

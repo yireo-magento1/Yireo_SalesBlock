@@ -1,15 +1,15 @@
 <?php
+
 /**
  * Yireo SalesBlock for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
- * @link        http://www.yireo.com/
+ * @link        https://www.yireo.com/
  */
-
-class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
+class Yireo_SalesBlock_Block_Rules extends Yireo_SalesBlock_Block_Generic
 {
     /**
      * Constructor method
@@ -17,6 +17,7 @@ class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
     public function _construct()
     {
         $this->setTemplate('salesblock/rules.phtml');
+
         parent::_construct();
     }
 
@@ -32,7 +33,7 @@ class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
             ->setSaveParametersInSession(true)
         );
 
-        $newButtonBlock = $this->getButtonBlock('New', 'setLocation(\''.$this->getNewUrl().'\')', 'task');
+        $newButtonBlock = $this->getButtonBlock('New', 'setLocation(\'' . $this->getNewUrl() . '\')', 'task');
         $this->setChild('new_button', $newButtonBlock);
 
         return parent::_prepareLayout();
@@ -96,16 +97,5 @@ class Yireo_SalesBlock_Block_Rules extends Mage_Adminhtml_Block_Widget_Container
     public function getHeader()
     {
         return $this->__('Sales Block Rules');
-    }
-
-    /**
-     * Return the version
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        $config = Mage::app()->getConfig()->getModuleConfig('Yireo_SalesBlock');
-        return (string)$config->version;
     }
 }

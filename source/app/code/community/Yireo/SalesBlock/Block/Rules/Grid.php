@@ -3,10 +3,10 @@
  * Yireo SalesBlock for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
- * @link        http://www.yireo.com/
+ * @link        https://www.yireo.com/
  */
 
 /**
@@ -15,11 +15,19 @@
 class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
     /**
+     * @var Yireo_SalesBlock_Helper_Data
+     */
+    protected $helper;
+
+    /**
      * Add grid things to the constructor
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->helper = Mage::helper('salesblock');
+
         $this->setId('salesblockGrid');
         $this->setDefaultSort('rule_id');
         $this->setDefaultDir('DESC');
@@ -36,16 +44,25 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
     {
         $collection = Mage::getModel('salesblock/rule')->getCollection();
         $this->setCollection($collection);
+        
         parent::_prepareCollection();
 
         $collection = $this->getCollection();
-        foreach($collection as $itemKey => $item) {
-            $item->setEmailValue(nl2br($item->getEmailValue()));
-            $item->setIpValue(nl2br($item->getIpValue()));
+        foreach ($collection as $itemKey => $item) {
+            $this->_prepareItem($item);
         }
 
         $this->setCollection($collection);
         return $this;
+    }
+
+    /**
+     * @param $item
+     */
+    protected function _prepareItem(&$item)
+    {
+        $item->setEmailValue(nl2br($item->getEmailValue()));
+        $item->setIpValue(nl2br($item->getIpValue()));
     }
 
     /**
@@ -57,28 +74,28 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
     protected function _prepareColumns()
     {
         $this->addColumn('rule_id', array(
-            'header'=> Mage::helper('salesblock')->__('Rule ID'),
+            'header' => $this->helper->__('Rule ID'),
             'width' => '50px',
             'index' => 'rule_id',
             'type' => 'number',
-			'sortable' => false,
-			'filter' => false,
+            'sortable' => false,
+            'filter' => false,
         ));
 
         $this->addColumn('label', array(
-            'header'=> Mage::helper('salesblock')->__('Label'),
+            'header' => $this->helper->__('Label'),
             'index' => 'label',
             'type' => 'text',
         ));
 
         $this->addColumn('email_value', array(
-            'header'=> Mage::helper('salesblock')->__('Email Value'),
+            'header' => $this->helper->__('Email Value'),
             'index' => 'email_value',
             'type' => 'text',
         ));
 
         $this->addColumn('ip_value', array(
-            'header'=> Mage::helper('salesblock')->__('IP Value'),
+            'header' => $this->helper->__('IP Value'),
             'index' => 'ip_value',
             'type' => 'text',
         ));
@@ -89,43 +106,51 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
         );
 
         $this->addColumn('status', array(
-            'header'=> Mage::helper('salesblock')->__('Status'),
+            'header' => $this->helper->__('Status'),
             'index' => 'status',
             'options' => $sourceOptions,
             'type' => 'options',
         ));
 
         $this->addColumn('actions', array(
-            'header'=> Mage::helper('salesblock')->__('Action'),
+            'header' => $this->helper->__('Action'),
             'type' => 'action',
             'getter' => 'getRuleId',
-            'actions' => array(
-                array(
-                    'caption' => Mage::helper('salesblock')->__('Edit'),
-                    'url' => array('base' => 'adminhtml/salesblockrule/edit'),
-                    'field' => 'rule_id'
-                ),
-                array(
-                    'caption' => Mage::helper('salesblock')->__('Delete'),
-                    'url' => array('base' => 'adminhtml/salesblockrules/delete'),
-                    'field' => 'rule_id'
-                ),
-                array(
-                    'caption' => Mage::helper('salesblock')->__('Disable'),
-                    'url' => array('base' => 'adminhtml/salesblockrules/disable'),
-                    'field' => 'rule_id'
-                ),
-                array(
-                    'caption' => Mage::helper('salesblock')->__('Enable'),
-                    'url' => array('base' => 'adminhtml/salesblockrules/enable'),
-                    'field' => 'rule_id'
-                )
-            ),
-            'filter'    => false,
-            'sortable'  => false,
+            'actions' => $this->getActionArray(),
+            'filter' => false,
+            'sortable' => false,
         ));
 
         return parent::_prepareColumns();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getActionArray()
+    {
+        return array(
+            array(
+                'caption' => $this->helper->__('Edit'),
+                'url' => array('base' => 'adminhtml/salesblockrule/edit'),
+                'field' => 'rule_id'
+            ),
+            array(
+                'caption' => $this->helper->__('Delete'),
+                'url' => array('base' => 'adminhtml/salesblockrules/delete'),
+                'field' => 'rule_id'
+            ),
+            array(
+                'caption' => $this->helper->__('Disable'),
+                'url' => array('base' => 'adminhtml/salesblockrules/disable'),
+                'field' => 'rule_id'
+            ),
+            array(
+                'caption' => $this->helper->__('Enable'),
+                'url' => array('base' => 'adminhtml/salesblockrules/enable'),
+                'field' => 'rule_id'
+            )
+        );
     }
 
     /**
@@ -138,18 +163,18 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
         $this->getMassactionBlock()->setUseSelectAll(false);
 
         $this->getMassactionBlock()->addItem('delete', array(
-            'label'=> Mage::helper('salesblock')->__('Delete'),
-            'url'  => $this->getUrl('adminhtml/salesblockrules/delete'),
+            'label' => Mage::helper('salesblock')->__('Delete'),
+            'url' => $this->getUrl('adminhtml/salesblockrules/delete'),
         ));
 
         $this->getMassactionBlock()->addItem('disable', array(
-            'label'=> Mage::helper('salesblock')->__('Disable'),
-            'url'  => $this->getUrl('adminhtml/salesblockrules/disable'),
+            'label' => Mage::helper('salesblock')->__('Disable'),
+            'url' => $this->getUrl('adminhtml/salesblockrules/disable'),
         ));
 
         $this->getMassactionBlock()->addItem('enable', array(
-            'label'=> Mage::helper('salesblock')->__('Enable'),
-            'url'  => $this->getUrl('adminhtml/salesblockrules/enable'),
+            'label' => Mage::helper('salesblock')->__('Enable'),
+            'url' => $this->getUrl('adminhtml/salesblockrules/enable'),
         ));
     }
 

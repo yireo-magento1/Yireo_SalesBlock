@@ -1,10 +1,10 @@
 <?php
 /**
- * Yireo SalesBlock for Magento 
+ * Yireo SalesBlock for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
  */
 
@@ -14,27 +14,52 @@
 class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
 {
     /**
+     * @var Mage_Core_Model_App
+     */
+    protected $app;
+
+    /**
+     * @var Mage_Cms_Helper_Page
+     */
+    protected $cmsHelper;
+
+    /**
+     * @var Yireo_SalesBlock_Model_Rule
+     */
+    protected $ruleModel;
+
+    /**
+     * Yireo_SalesBlock_Helper_Data constructor.
+     */
+    public function __construct()
+    {
+        $this->app = Mage::app();
+        $this->cmsHelper = Mage::helper('cms/page');
+        $this->ruleModel = Mage::getModel('salesblock/rule');
+    }
+    
+    /**
      * Helper-method to check if this module is enabled
      *
      * @return bool
      */
     public function enabled()
     {
-        if ((bool)Mage::getStoreConfig('advanced/modules_disable_output/Yireo_SalesBlock')) {
+        if ((bool)$this->getStoreConfig('advanced/modules_disable_output/Yireo_SalesBlock')) {
             return false;
         }
 
-        return (bool)Mage::getStoreConfig('salesblock/settings/enabled');
+        return (bool)$this->getStoreConfig('salesblock/settings/enabled');
     }
 
     /**
      * Helper-method to fetch all rules
      *
-     * @return bool
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     public function getRules()
     {
-        $rules = Mage::getModel('salesblock/rule')->getCollection()->addFieldToFilter('status', 1);
+        $rules = $this->ruleModel->getCollection()->addFieldToFilter('status', 1);
         return $rules;
     }
 
@@ -45,11 +70,11 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getUrl()
     {
-        $custom_page = (int) Mage::getStoreConfig('salesblock/settings/custom_page');
-        $cmsPageId = Mage::getStoreConfig('salesblock/settings/cmspage');
-        $cmsPageUrl = Mage::helper('cms/page')->getPageUrl($cmsPageId);
+        $custom_page = (int)$this->getStoreConfig('salesblock/settings/custom_page');
+        $cmsPageId = $this->getStoreConfig('salesblock/settings/cmspage');
+        $cmsPageUrl = $this->cmsHelper->getPageUrl($cmsPageId);
 
-        if($custom_page == 1 || empty($cmsPageUrl)) {
+        if ($custom_page == 1 || empty($cmsPageUrl)) {
             return Mage::getUrl('salesblock');
         } else {
             return $cmsPageUrl;
@@ -63,7 +88,7 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isAjax()
     {
-        $request = Mage::app()->getRequest();
+        $request = $this->app->getRequest();
 
         if ($request->isXmlHttpRequest()) {
             return true;
@@ -74,5 +99,15 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         return false;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return null|string
+     */
+    public function getStoreConfig($value)
+    {
+        return $this->app->getStore()->getConfig($value);
     }
 }

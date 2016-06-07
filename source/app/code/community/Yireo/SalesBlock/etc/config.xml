@@ -4,8 +4,8 @@
  * Yireo SalesBlock for Magento 
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
  */
 -->
@@ -13,7 +13,7 @@
 
     <modules>
         <Yireo_SalesBlock>
-            <version>0.1.0</version>
+            <version>0.1.3</version>
         </Yireo_SalesBlock>
     </modules>
 
@@ -70,38 +70,38 @@
         <events>
             <controller_action_predispatch>
                 <observers>
-                    <salesblock_controller_action_predispatch>
+                    <salesblock_prevent_cart_actions>
                         <type>singleton</type>
-                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <class>Yireo_SalesBlock_Model_Observer_PreventCartActions</class>
                         <method>controllerActionPredispatch</method>
-                    </salesblock_controller_action_predispatch>
+                    </salesblock_prevent_cart_actions>
                 </observers>
             </controller_action_predispatch>
             <core_block_abstract_to_html_after>
                 <observers>
-                    <salesblock_core_block_abstract_to_html_after>
+                    <salesblock_replace_rule_variables>
                         <type>singleton</type>
-                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <class>Yireo_SalesBlock_Model_Observer_ReplaceRuleVariables</class>
                         <method>coreBlockAbstractToHtmlAfter</method>
-                    </salesblock_core_block_abstract_to_html_after>
+                    </salesblock_replace_rule_variables>
                 </observers>
             </core_block_abstract_to_html_after>
            <sales_quote_save_before>
                 <observers>
-                    <salesblock_sales_quote_save_before>
+                    <salesblock_prevent_quote_save>
                         <type>singleton</type>
-                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <class>Yireo_SalesBlock_Model_Observer_PreventQuoteSave</class>
                         <method>salesQuoteSaveBefore</method>
-                    </salesblock_sales_quote_save_before>
+                    </salesblock_prevent_quote_save>
                 </observers>
             </sales_quote_save_before>
            <sales_order_place_before>
                 <observers>
-                    <salesblock_sales_order_place_before>
+                    <salesblock_prevent_order_save>
                         <type>singleton</type>
-                        <class>Yireo_SalesBlock_Model_Observer</class>
+                        <class>Yireo_SalesBlock_Model_Observer_PreventOrderSave</class>
                         <method>salesOrderPlaceBefore</method>
-                    </salesblock_sales_order_place_before>
+                    </salesblock_prevent_order_save>
                 </observers>
             </sales_order_place_before>
         </events>
@@ -151,6 +151,9 @@
     </admin>
 
     <frontend>
+       <secure_url>
+            <salesblock>/salesblock/</salesblock>
+        </secure_url>
         <routers>
             <salesblock>
                 <use>standard</use>

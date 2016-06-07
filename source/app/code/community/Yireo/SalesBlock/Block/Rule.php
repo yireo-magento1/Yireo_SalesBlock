@@ -1,15 +1,15 @@
 <?php
+
 /**
  * Yireo SalesBlock for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
- * @link        http://www.yireo.com/
+ * @link        https://www.yireo.com/
  */
-
-class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
+class Yireo_SalesBlock_Block_Rule extends Yireo_SalesBlock_Block_Generic
 {
     /**
      * Constructor method
@@ -17,6 +17,7 @@ class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
     public function _construct()
     {
         $this->setTemplate('salesblock/rule.phtml');
+        
         parent::_construct();
     }
 
@@ -33,10 +34,10 @@ class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
         $applyButtonBlock = $this->getButtonBlock('Apply', 'ruleForm.submit();', 'save');
         $this->setChild('apply_button', $applyButtonBlock);
 
-        $deleteButtonBlock = $this->getButtonBlock('Delete', 'setLocation(\''.$this->getDeleteUrl().'\')', 'delete');
+        $deleteButtonBlock = $this->getButtonBlock('Delete', 'setLocation(\'' . $this->getDeleteUrl() . '\')', 'delete');
         $this->setChild('delete_button', $deleteButtonBlock);
 
-        $backButtonBlock = $this->getButtonBlock('Back', 'setLocation(\''.$this->getBackUrl().'\')', 'back');
+        $backButtonBlock = $this->getButtonBlock('Back', 'setLocation(\'' . $this->getBackUrl() . '\')', 'back');
         $this->setChild('back_button', $backButtonBlock);
 
         return parent::_prepareLayout();
@@ -109,23 +110,12 @@ class Yireo_SalesBlock_Block_Rule extends Mage_Adminhtml_Block_Widget_Container
      */
     public function getRule()
     {
-        $rule_id = $this->getRequest()->getParam('rule_id');
-        $rule = Mage::getModel('salesblock/rule');
-        if(!empty($rule_id)) {
-            $rule->load($rule_id);
+        $ruleId = $this->getRequest()->getParam('rule_id');
+        
+        if (!empty($ruleId)) {
+            $this->ruleModel->load($ruleId);
         }
 
-        return $rule;
-    }
-
-    /**
-     * Return the version
-     *
-     * @return string
-     */
-    public function getVersion()
-    {
-        $config = Mage::app()->getConfig()->getModuleConfig('Yireo_SalesBlock');
-        return (string)$config->version;
+        return $this->ruleModel;
     }
 }

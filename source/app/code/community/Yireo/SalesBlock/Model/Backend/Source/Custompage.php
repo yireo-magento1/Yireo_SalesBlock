@@ -1,13 +1,13 @@
 <?php
+
 /**
  * SalesBlock plugin for Magento
  *
  * @package     Yireo_SalesBlock
- * @author      Yireo (http://www.yireo.com/)
- * @copyright   Copyright 2015 Yireo (http://www.yireo.com/)
+ * @author      Yireo (https://www.yireo.com/)
+ * @copyright   Copyright 2016 Yireo (https://www.yireo.com/)
  * @license     Open Source License (OSL v3)
  */
-
 class Yireo_SalesBlock_Model_Backend_Source_Custompage
 {
     protected $_options;
@@ -22,8 +22,8 @@ class Yireo_SalesBlock_Model_Backend_Source_Custompage
         if (!$this->_options) {
             $this->_options = Mage::getResourceModel('cms/page_collection')
                 ->load()->toOptionIdArray();
-    
-            array_unshift($this->_options, array('value' => '', 'label'=> Mage::helper('salesblock')->__('(No CMS Page, use custom page instead)')));
+
+            array_unshift($this->_options, array('value' => '', 'label' => Mage::helper('salesblock')->__('(No CMS Page, use custom page instead)')));
         }
 
         return $this->_options;
