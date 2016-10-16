@@ -88,7 +88,7 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
 
             // Direct IP matches
             if (in_array($ip, $ruleIpValues)) {
-                $this->logMatch($ip, $customerEmail);
+                $this->logMatch($rule->getId(), $ip, $customerEmail);
                 return $rule->getId();
             }
 
@@ -96,7 +96,7 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
             if (!empty($ruleIpValues)) {
                 foreach ($ruleIpValues as $ruleIpValue) {
                     if ($this->matchIpRange($ip, $ruleIpValue)) {
-                        $this->logMatch($ip, $customerEmail);
+                        $this->logMatch($rule->getId(), $ip, $customerEmail);
                         return $rule->getId();
                     }
                 }
@@ -107,7 +107,7 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
                 $ruleEmailValues = $rule->getEmailValueArray();
                 foreach ($ruleEmailValues as $ruleEmailValue) {
                     if ($this->hasEmailMatch($customerEmail, $ruleEmailValue)) {
-                        $this->logMatch($ip, $customerEmail);
+                        $this->logMatch($rule->getId(), $ip, $customerEmail);
                         return $rule->getId();
                     }
                 }
@@ -221,13 +221,14 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
     /**
      * Method to execute when a visitor is actually matched
      *
+     * @param int $ruleId
      * @param string $ip
      * @param string $email
      *
      */
-    public function logMatch($ip, $email)
+    public function logMatch($ruleId, $ip, $email)
     {
-        $message = 'SalesBlock: IP ' . $ip . ', email ' . $email;
+        $message = 'SalesBlock: rule '. $ruleId .', IP ' . $ip . ', email ' . $email;
         Mage::log($message, null, 'salesblock.log');
     }
 }

@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS {$this->getTable('salesblock_rule')} (
   `ip_value` TEXT,
   `frontend_label` VARCHAR(255) NOT NULL DEFAULT '',
   `frontend_text` VARCHAR(255) NOT NULL DEFAULT '',
-  `status` TINYINT(1) NOT NULL DEFAULT 1
+  `status` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY  (`rule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ");
