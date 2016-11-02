@@ -68,7 +68,7 @@ class Yireo_SalesBlock_Model_Rule extends Mage_Core_Model_Abstract
      */
     public function stringToArray($string)
     {
-        $data = preg_split( "/(\n|;|\|)/", $string);
+        $data = preg_split( "/(\n|,|;|\|)/", $string);
         $newData = array();
 
         foreach ($data as $value) {
