@@ -25,7 +25,7 @@ class Yireo_SalesBlock_Model_Observer_PreventOrderSave extends Yireo_SalesBlock_
      */
     public function salesOrderPlaceBefore($observer)
     {
-        $match = (int)$this->ruleHelper->hasMatch();
+        $match = (int)$this->ruleHelper->getMatchId();
         if (empty($match)) {
             return $this;
         }
@@ -33,9 +33,11 @@ class Yireo_SalesBlock_Model_Observer_PreventOrderSave extends Yireo_SalesBlock_
         $this->storeData($match);
 
         $url = $this->helper->getUrl();
+
         if (!empty($url)) {
             $this->response->setRedirect($url);
-            return $this;
+            $this->response->sendResponse();
+            exit;
         }
 
         throw new Yireo_SalesBlock_Lib_Exception_SalesDeniedException('Unable to save order.');

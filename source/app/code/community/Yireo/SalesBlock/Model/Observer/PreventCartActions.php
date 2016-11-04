@@ -73,6 +73,8 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
         $url = $this->helper->getUrl();
         if (!empty($url)) {
             $this->response->setRedirect($url);
+            $this->response->sendResponse();
+            exit;
         }
 
         return $this;

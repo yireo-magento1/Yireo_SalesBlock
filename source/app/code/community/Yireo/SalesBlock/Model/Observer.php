@@ -109,6 +109,6 @@ class Yireo_SalesBlock_Model_Observer
     protected function storeData($match)
     {
         // Store the match in the session
-        $this->session->setSalesblockRule($match);
+        $this->session->setData('salesblock_rule', $match);
     }
 }

@@ -35,7 +35,8 @@ class Yireo_SalesBlock_Model_Observer_PreventQuoteSave extends Yireo_SalesBlock_
         $url = $this->helper->getUrl();
         if (!empty($url)) {
             $this->response->setRedirect($url);
-            return $this;
+            $this->response->sendResponse();
+            exit;
         }
 
         throw new Yireo_SalesBlock_Lib_Exception_SalesDeniedException('Unable to save quote.');
