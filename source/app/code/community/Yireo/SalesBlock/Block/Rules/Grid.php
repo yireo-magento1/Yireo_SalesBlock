@@ -57,7 +57,7 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
     }
 
     /**
-     * @param $item
+     * @param Yireo_SalesBlock_Model_Rule $item
      */
     protected function _prepareItem(&$item)
     {
@@ -68,7 +68,7 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
     /**
      * Prepare the columns in this grid
      *
-     * @return $this
+     * @return mixed
      * @throws Exception
      */
     protected function _prepareColumns()
@@ -181,7 +181,7 @@ class Yireo_SalesBlock_Block_Rules_Grid extends Mage_Adminhtml_Block_Widget_Grid
     /**
      * Get the edit URL for a specific sales block rule
      *
-     * @param $row
+     * @param Yireo_SalesBlock_Model_Rule $row
      *
      * @return string
      */

@@ -44,7 +44,7 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
      */
     public function controllerActionPredispatch($observer)
     {
-        if ($this->allowPrevention() == false) {
+        if ($this->allowPrevention() === false) {
             return $this;
         }
 
@@ -55,29 +55,42 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
 
         $this->storeData($match);
 
-        if ($this->modifyAjaxCall() == true) {
+        if ($this->modifyAjaxCall() === true) {
             return $this;
         }
 
-        /** @var Mage_Sales_Model_Quote $quote */
-        $quote = $this->cart->getQuote();
-        $quote->setCustomerEmail('');
-        $quote->save();
+        $this->resetCustomerEmailInQuote();
+        $this->resetAwOnestepcheckout();
 
+        $url = $this->helper->getUrl();
+        if (!empty($url)) {
+            $this->redirect($url);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Reset the checkout data in the AheadWorks Onestepcheckout
+     */
+    protected function resetAwOnestepcheckout()
+    {
         $checkoutSession = $this->checkoutSession;
         $data = $checkoutSession->getData('aw_onestepcheckout_form_values');
         $data['billing']['email'] = '';
         $data['shipping']['email'] = '';
         $checkoutSession->setData('aw_onestepcheckout_form_values', $data);
+    }
 
-        $url = $this->helper->getUrl();
-        if (!empty($url)) {
-            $this->response->setRedirect($url);
-            $this->response->sendResponse();
-            exit;
-        }
-
-        return $this;
+    /**
+     * Reset the customer email in the current quote
+     */
+    protected function resetCustomerEmailInQuote()
+    {
+        /** @var Mage_Sales_Model_Quote $quote */
+        $quote = $this->cart->getQuote();
+        $quote->setCustomerEmail('');
+        $quote->save();
     }
 
     /**
@@ -85,7 +98,7 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
      */
     protected function modifyAjaxCall()
     {
-        if ($this->helper->isAjax() == false) {
+        if ($this->helper->isAjax() === false) {
             return false;
         }
 
@@ -96,10 +109,9 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
 
         $request = $this->request;
         $response = $this->response;
-        $action = $request->getActionName();
+        $actionName = $request->getActionName();
 
-        $frontControllerAction = Mage::app()->getFrontController()->getAction();
-        $frontControllerAction->setFlag($action, Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
+        $this->setControllerActionNoDispatch($actionName);
 
         $result = array();
         $result['success'] = false;
@@ -108,6 +120,15 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
         $response->setBody($jsonData);
 
         return true;
+    }
+
+    /**
+     * @param string $actionName
+     */
+    protected function setControllerActionNoDispatch($actionName)
+    {
+        $frontControllerAction = Mage::app()->getFrontController()->getAction();
+        $frontControllerAction->setFlag($actionName, Mage_Core_Controller_Varien_Action::FLAG_NO_DISPATCH, true);
     }
 
     /**

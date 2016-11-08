@@ -24,6 +24,110 @@ class Yireo_SalesBlock_Model_Rule extends Mage_Core_Model_Abstract
     }
 
     /**
+     * @return int
+     */
+    public function getRuleId()
+    {
+        return $this->getData('rule_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->getData('label');
+    }
+
+    /**
+     * @param string $label
+     */
+    public function setLabel($label)
+    {
+        $this->setData('label', $label);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFrontendLabel()
+    {
+        return $this->getData('frontend_label');
+    }
+
+    /**
+     * @param string $frontendLabel
+     */
+    public function setFrontendLabel($frontendLabel)
+    {
+        $this->setData('frontend_label', $frontendLabel);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFrontendText()
+    {
+        return $this->getData('frontend_text');
+    }
+
+    /**
+     * @param string $frontendText
+     */
+    public function setFrontendText($frontendText)
+    {
+        $this->setData('frontend_text', $frontendText);
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailValue()
+    {
+        return $this->getData('email_value');
+    }
+
+    /**
+     * @param string $emailValue
+     */
+    public function setEmailValue($emailValue)
+    {
+        $this->setData('email_value', $emailValue);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpValue()
+    {
+        return $this->getData('ip_value');
+    }
+
+    /**
+     * @param string $emailValue
+     */
+    public function setIpValue($emailValue)
+    {
+        $this->setData('ip_value', $emailValue);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->getData('status');
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->setData('status', $status);
+    }
+
+    /**
      * Get the IP values of this rule as an array
      *
      * @return array|mixed

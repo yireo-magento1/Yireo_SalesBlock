@@ -76,6 +76,7 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         $rule_id = $this->getRequest()->getParam('rule_id');
 
         // Initialize the rule
+        /** @var Yireo_SalesBlock_Model_Rule $rule */
         $rule = $this->ruleModel;
         if (!empty($rule_id)) {
             $rule->load($rule_id);
@@ -91,7 +92,7 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         $rule->save();
 
         // Set a message
-        $this->adminHtmlSession->addNotice($this->__('Saved rule succesfully'));
+        $this->adminHtmlSession->addSuccess($this->__('Saved rule succesfully'));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -112,7 +113,7 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         }
 
         // Set a message
-        $this->adminHtmlSession->addNotice($this->__('Deleted rule succesfully'));
+        $this->adminHtmlSession->addSuccess($this->__('Deleted rule succesfully'));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -121,12 +122,12 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
     /**
      * Verify if this action is allowed
      *
-     * @return mixed
+     * @return bool
      */
     protected function _isAllowed()
     {
         $aclResource = 'admin/system/salesblock';
 
-        return $this->adminSession->isAllowed($aclResource);
+        return (bool) $this->adminSession->isAllowed($aclResource);
     }
 }

@@ -101,11 +101,11 @@ class Yireo_SalesBlock_Model_Observer_ReplaceRuleVariables
     }
 
     /**
-     * @param $block
+     * @param Mage_Core_Block_Abstract $block
      *
      * @return bool
      */
-    protected function isAllowedBlock($block)
+    protected function isAllowedBlock(Mage_Core_Block_Abstract $block)
     {
         $allowedBlocks = array('content');
 

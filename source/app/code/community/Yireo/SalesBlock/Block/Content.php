@@ -93,7 +93,7 @@ class Yireo_SalesBlock_Block_Content extends Yireo_SalesBlock_Block_Generic
     /**
      * Load a specific rule
      *
-     * @return Mage_Core_Model_Abstract
+     * @return Yireo_SalesBlock_Model_Rule
      */
     public function getRule()
     {

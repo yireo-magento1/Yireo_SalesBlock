@@ -62,8 +62,11 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
      */
     public function indexAction()
     {
+        /** @var Yireo_SalesBlock_Block_Rules $rulesBlock */
+        $rulesBlock = $this->getLayout()->createBlock('salesblock/rules');
+
         $this->_initAction()
-            ->_addContent($this->getLayout()->createBlock('salesblock/rules'))
+            ->_addContent($rulesBlock)
             ->renderLayout();
     }
 
@@ -74,8 +77,24 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
     {
         // Load the rules
         $rule_ids = $this->getRequest()->getParam('rule_id');
-        if (!is_array($rule_ids)) $rule_ids = array($rule_ids);
+        if (!is_array($rule_ids)) {
+            $rule_ids = array($rule_ids);
+        }
 
+        $this->deleteRulesById($rule_ids);
+
+        // Set a message
+        $this->adminHtmlSession->addSuccess($this->__('Deleted %s rules succesfully', count($rule_ids)));
+
+        // Redirect
+        $this->_redirect('adminhtml/salesblockrules/index');
+    }
+
+    /**
+     * @param $ruleIds
+     */
+    protected function deleteRulesById($ruleIds)
+    {
         // Delete the rules
         if (!empty($rule_ids)) {
             foreach ($rule_ids as $rule_id) {
@@ -83,12 +102,6 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
                 $rule->delete();
             }
         }
-
-        // Set a message
-        $this->adminHtmlSession->addNotice($this->__('Deleted %s rules succesfully', count($rule_ids)));
-
-        // Redirect
-        $this->_redirect('adminhtml/salesblockrules/index');
     }
 
     /**
@@ -98,19 +111,15 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
     {
         // Load the rules
         $rule_ids = $this->getRequest()->getParam('rule_id');
-        if (!is_array($rule_ids)) $rule_ids = array($rule_ids);
-
-        // Enable the rules
-        if (!empty($rule_ids)) {
-            foreach ($rule_ids as $rule_id) {
-                $rule = $this->ruleModel->load($rule_id);
-                $rule->setData('status', 1);
-                $rule->save();
-            }
+        if (!is_array($rule_ids)) {
+            $rule_ids = array($rule_ids);
         }
 
+        // Enable the rules
+        $this->setStatusForRuleIds($rule_ids, 1);
+
         // Set a message
-        $this->adminHtmlSession->addNotice($this->__('Enabled %s rules succesfully', count($rule_ids)));
+        $this->adminHtmlSession->addSuccess($this->__('Enabled %s rules succesfully', count($rule_ids)));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -123,22 +132,42 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
     {
         // Load the rules
         $rule_ids = $this->getRequest()->getParam('rule_id');
-        if (!is_array($rule_ids)) $rule_ids = array($rule_ids);
-
-        // Disable the rules
-        if (!empty($rule_ids)) {
-            foreach ($rule_ids as $rule_id) {
-                $rule = $this->ruleModel->load($rule_id);
-                $rule->setData('status', 0);
-                $rule->save();
-            }
+        if (!is_array($rule_ids)) {
+            $rule_ids = array($rule_ids);
         }
 
+        // Disable the rules
+        $this->setStatusForRuleIds($rule_ids, 0);
+
         // Set a message
-        $this->adminHtmlSession->addNotice($this->__('Disabled %s rules succesfully', count($rule_ids)));
+        $this->adminHtmlSession->addSuccess($this->__('Disabled %s rules succesfully', count($rule_ids)));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
+    }
+
+    /**
+     * @param array $ruleIds
+     * @param int $status
+     */
+    protected function setStatusForRuleIds($ruleIds, $status)
+    {
+        if (!empty($ruleIds)) {
+            foreach ($ruleIds as $rule_id) {
+                $this->setRuleStatusById($rule_id, (int) $status);
+            }
+        }
+    }
+
+    /**
+     * @param int $ruleId
+     * @param int $ruleStatus
+     */
+    protected function setRuleStatusById($ruleId, $ruleStatus)
+    {
+        $rule = $this->ruleModel->load($ruleId);
+        $rule->setData('status', (int) $ruleStatus);
+        $rule->save();
     }
 
     /**

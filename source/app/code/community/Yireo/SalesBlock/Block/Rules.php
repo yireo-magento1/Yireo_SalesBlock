@@ -47,10 +47,11 @@ class Yireo_SalesBlock_Block_Rules extends Yireo_SalesBlock_Block_Generic
      * @param $onClick
      * @param $class
      *
-     * @return Mage_Core_Block_Abstract
+     * @return Mage_Adminhtml_Block_Widget_Button
      */
     protected function getButtonBlock($label, $onClick, $class)
     {
+        /** @var Mage_Adminhtml_Block_Widget_Button $buttonBlock */
         $buttonBlock = $this->getLayout()->createBlock('adminhtml/widget_button')
             ->setData(array(
                 'label' => Mage::helper('salesblock')->__($label),

@@ -111,4 +111,14 @@ class Yireo_SalesBlock_Model_Observer
         // Store the match in the session
         $this->session->setData('salesblock_rule', $match);
     }
+
+    /**
+     * @param string $url
+     */
+    protected function redirect($url)
+    {
+        $this->response->setRedirect($url);
+        $this->response->sendResponse();
+        exit;
+    }
 }
