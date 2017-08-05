@@ -20,23 +20,20 @@ class Yireo_SalesBlock_Model_Observer_PreventQuoteSave extends Yireo_SalesBlock_
      * @param $observer
      *
      * @return $this
-     * @throws Yireo_SalesBlock_Lib_Exception_SalesDeniedException
+     * @throws Yireo_SalesBlock_Exception_SalesDeniedException
      * @event sales_quote_place_before
      */
     public function salesQuoteSaveBefore($observer)
     {
-        $match = (int)$this->ruleHelper->hasMatch();
-        if (empty($match)) {
+        if (!$this->hasMatch()) {
             return $this;
         }
-
-        $this->storeData($match);
 
         $url = $this->helper->getUrl();
         if (!empty($url)) {
             $this->redirect($url);
         }
 
-        throw new Yireo_SalesBlock_Lib_Exception_SalesDeniedException('Unable to save quote.');
+        throw new Yireo_SalesBlock_Exception_SalesDeniedException('Unable to save quote.');
     }
 }

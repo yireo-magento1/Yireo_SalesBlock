@@ -76,9 +76,9 @@ class Yireo_SalesBlock_Helper_Data extends Mage_Core_Helper_Abstract
 
         if ($custom_page == 1 || empty($cmsPageUrl)) {
             return Mage::getUrl('salesblock');
-        } else {
-            return $cmsPageUrl;
         }
+
+        return $cmsPageUrl;
     }
 
     /**

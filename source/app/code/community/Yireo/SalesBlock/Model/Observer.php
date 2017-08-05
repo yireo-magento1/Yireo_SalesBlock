@@ -104,6 +104,25 @@ class Yireo_SalesBlock_Model_Observer
     }
 
     /**
+     * @return bool|int
+     */
+    protected function hasMatch()
+    {
+        $matchId = (int)$this->ruleHelper->getMatchId();
+        $spamMatch = $this->ruleHelper->checkSpamIp();
+
+        if (empty($matchId) && $spamMatch === false) {
+            return false;
+        }
+
+        if ($matchId) {
+            $this->storeData($matchId);
+        }
+
+        return $matchId;
+    }
+
+    /**
      * Helper method to store data in the session
      */
     protected function storeData($match)

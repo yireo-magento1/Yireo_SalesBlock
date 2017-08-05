@@ -48,12 +48,9 @@ class Yireo_SalesBlock_Model_Observer_PreventCartActions extends Yireo_SalesBloc
             return $this;
         }
 
-        $match = (int)$this->ruleHelper->getMatchId();
-        if (empty($match)) {
+        if (!$this->hasMatch()) {
             return $this;
         }
-
-        $this->storeData($match);
 
         if ($this->modifyAjaxCall() === true) {
             return $this;

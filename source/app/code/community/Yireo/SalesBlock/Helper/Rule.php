@@ -118,6 +118,37 @@ class Yireo_SalesBlock_Helper_Rule extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * @param string $ip
+     *
+     * @return bool
+     */
+    public function checkSpamIp($ip = null)
+    {
+        if (empty($ip)) {
+            $ip = $this->getIp();
+        }
+
+        if (empty($ip)) {
+            return false;
+        }
+
+        $hostname = implode('.', array_reverse(explode('.', $ip))).'.zen.spamhaus.org';
+        $records = dns_get_record($hostname);
+
+        if (empty($records)) {
+            return false;
+        }
+
+        foreach ($records as $record) {
+            if (isset($record['ip']) && in_array($record['ip'], ['127.0.0.2', '127.0.0.3'])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Match whether a certain IP matches a certain range string
      *
      * @param $ip
