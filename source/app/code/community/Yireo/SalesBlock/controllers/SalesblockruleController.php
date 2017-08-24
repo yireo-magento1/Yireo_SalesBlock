@@ -38,8 +38,6 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
     {
         parent::_construct();
 
-        $this->adminHtmlSession = Mage::getModel('adminhtml/session');
-        $this->adminSession = Mage::getModel('admin/session');
         $this->ruleModel = Mage::getModel('salesblock/rule');
     }
     
@@ -92,7 +90,7 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         $rule->save();
 
         // Set a message
-        $this->adminHtmlSession->addSuccess($this->__('Saved rule succesfully'));
+        $this->getAdminHtmlSession()->addSuccess($this->__('Saved rule succesfully'));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -113,7 +111,7 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
         }
 
         // Set a message
-        $this->adminHtmlSession->addSuccess($this->__('Deleted rule succesfully'));
+        $this->getAdminHtmlSession()->addSuccess($this->__('Deleted rule succesfully'));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -128,6 +126,34 @@ class Yireo_SalesBlock_SalesblockruleController extends Mage_Adminhtml_Controlle
     {
         $aclResource = 'admin/system/salesblock';
 
-        return (bool) $this->adminSession->isAllowed($aclResource);
+        return (bool) $this->getAdminSession()->isAllowed($aclResource);
+    }
+
+    /**
+     * Get session
+     *
+     * @return mixed
+     */
+    protected function getAdminHtmlSession()
+    {
+        if (!$this->adminHtmlSession) {
+            $this->adminHtmlSession = Mage::getModel('adminhtml/session');
+        }
+
+        return $this->adminHtmlSession;
+    }
+
+    /**
+     * Get session
+     *
+     * @return mixed
+     */
+    protected function getAdminSession()
+    {
+        if (!$this->adminSession) {
+            $this->adminSession = Mage::getModel('admin/session');
+        }
+
+        return $this->adminSession;
     }
 }

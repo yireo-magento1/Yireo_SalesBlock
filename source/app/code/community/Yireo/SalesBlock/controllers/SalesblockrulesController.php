@@ -38,8 +38,6 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
     {
         parent::_construct();
 
-        $this->adminHtmlSession = Mage::getModel('adminhtml/session');
-        $this->adminSession = Mage::getModel('admin/session');
         $this->ruleModel = Mage::getModel('salesblock/rule');
     }
     
@@ -84,7 +82,7 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
         $this->deleteRulesById($rule_ids);
 
         // Set a message
-        $this->adminHtmlSession->addSuccess($this->__('Deleted %s rules succesfully', count($rule_ids)));
+        $this->getAdminHtmlSession()->addSuccess($this->__('Deleted %s rules succesfully', count($rule_ids)));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -119,7 +117,7 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
         $this->setStatusForRuleIds($rule_ids, 1);
 
         // Set a message
-        $this->adminHtmlSession->addSuccess($this->__('Enabled %s rules succesfully', count($rule_ids)));
+        $this->getAdminHtmlSession()->addSuccess($this->__('Enabled %s rules succesfully', count($rule_ids)));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -140,7 +138,7 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
         $this->setStatusForRuleIds($rule_ids, 0);
 
         // Set a message
-        $this->adminHtmlSession->addSuccess($this->__('Disabled %s rules succesfully', count($rule_ids)));
+        $this->getAdminHtmlSession()->addSuccess($this->__('Disabled %s rules succesfully', count($rule_ids)));
 
         // Redirect
         $this->_redirect('adminhtml/salesblockrules/index');
@@ -179,6 +177,34 @@ class Yireo_SalesBlock_SalesblockrulesController extends Mage_Adminhtml_Controll
     {
         $aclResource = 'admin/system/salesblock';
 
-        return $this->adminSession->isAllowed($aclResource);
+        return $this->getAdminSession()->isAllowed($aclResource);
+    }
+
+    /**
+     * Get session
+     *
+     * @return mixed
+     */
+    protected function getAdminHtmlSession()
+    {
+        if (!$this->adminHtmlSession) {
+            $this->adminHtmlSession = Mage::getModel('adminhtml/session');
+        }
+
+        return $this->adminHtmlSession;
+    }
+
+    /**
+     * Get session
+     *
+     * @return mixed
+     */
+    protected function getAdminSession()
+    {
+        if (!$this->adminSession) {
+            $this->adminSession = Mage::getModel('admin/session');
+        }
+
+        return $this->adminSession;
     }
 }
