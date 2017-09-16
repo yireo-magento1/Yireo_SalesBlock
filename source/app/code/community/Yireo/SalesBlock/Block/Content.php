@@ -29,9 +29,9 @@ class Yireo_SalesBlock_Block_Content extends Yireo_SalesBlock_Block_Generic
         $this->setTemplate('salesblock/content.phtml');
         
         parent::_construct();
-        
+
         $this->cmsPage = Mage::getModel('cms/page');
-        $this->session = Mage::getSingleton('core/session');
+        $this->session = new Yireo_SalesBlock_Proxy_Core_Session;
     }
 
     /**
