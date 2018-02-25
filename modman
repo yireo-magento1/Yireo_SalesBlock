@@ -1,0 +1,7 @@
+# Modman file
+source/app/code/community/Yireo/SalesBlock                      app/code/community/Yireo/SalesBlock
+source/app/design/adminhtml/default/default/template/salesblock app/design/adminhtml/default/default/template/salesblock
+source/app/design/frontend/base/default/layout/salesblock.xml   app/design/frontend/base/default/layout/salesblock.xml
+source/app/design/frontend/base/default/template/salesblock     app/design/frontend/base/default/template/salesblock
+source/app/etc/modules/Yireo_SalesBlock.xml                     app/etc/modules/Yireo_SalesBlock.xml
+source/skin/adminhtml/default/default/images/salesblock         skin/adminhtml/default/default/images/salesblock
